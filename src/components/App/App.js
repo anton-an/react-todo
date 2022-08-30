@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './App.css'
 import { formatDistanceToNow } from 'date-fns'
 
@@ -9,28 +9,39 @@ import TaskList from '../TaskList';
 
 
 
-const App = () => {
+export default class App extends React.Component {
 
-    const taskCreatedTime = formatDistanceToNow(new Date(), { addSuffix: true })
+    state = {
+        tasksData: [
+            {completed: true, description: 'Completed task', id: 1},
+            {completed: false, description: 'Active task', id: 2},
+            {completed: false, editing: true, description: 'Editing task', id: 3}
+        ],
+    }
 
-    const tasksData = [
-        {completed: true, description: 'Completed task', createdTime: taskCreatedTime, id: 1},
-        {completed: false, description: 'Active task', createdTime: taskCreatedTime, id: 2},
-        {completed: false, editing: true, description: 'Editing task', createdTime: taskCreatedTime, id: 3}
-    ];
+    deleteTask = (id) => {
+        console.log(id)
+        this.setState(({ tasksData }) => {
+            const newArr = tasksData.filter(item => item.id !== id)
+            return {
+                tasksData: newArr
+            };
+        });
+    };
 
-    return (
-        <section className='todoapp'>
-            <header className='header'>
-                <h1>Todos</h1>
-                <NewTaskForm />
-            </header>
-            <section className='main'>
-                <TaskList taskData = {tasksData} />
-                <Footer />
-            </section>   
-        </section>
-    );
+    render () {
+
+        return (
+            <section className='todoapp'>
+                <header className='header'>
+                    <h1>Todos</h1>
+                    <NewTaskForm />
+                </header>
+                <section className='main'>
+                    <TaskList tasksData={this.state.tasksData} onDeleted={this.deleteTask} />
+                    <Footer />
+                </section>   
+            </section>
+        );
+    };
 };
-
-export default App;
