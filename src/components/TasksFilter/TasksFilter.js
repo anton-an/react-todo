@@ -2,20 +2,32 @@ import React from "react";
 
 import './TasksFilter.css'
 
-const TasksFilter = () => {
+const filterButtons = [
+    { label: 'All' },
+    { label: 'Active' },
+    { label: 'Completed' }
+];
+
+const TasksFilter = ({ onFilterChange, filterType }) => {
+
+    const onClick = (e) => {
+        onFilterChange(e.target.innerText)
+    };
+
+    const buttons = filterButtons.map(item => {
+        return (
+            <li>
+                <button className={item.label === filterType ? 'selected' : ''} onClick={onClick}>{item.label}</button>
+            </li>
+        )
+    })
+
     return (
         <ul className="filters">
-            <li>
-                <button className="selected">All</button>
-            </li>
-            <li>
-                <button>Active</button>
-            </li>
-            <li>
-                <button>Completed</button>
-            </li>
+            {buttons}
         </ul>
     );
-}
+
+};
 
 export default TasksFilter

@@ -3,14 +3,17 @@ import './TaskList.css'
 
 import Task from "../Task";
 
-const TaskList = ({tasksData, onDeleted}) => {
+const TaskList = ({ tasksData, onDelete, onComplete, onEdit }) => {
 
     const elements = tasksData.map((item) => {
         const { id } = item
         return (
             <Task {...item}
             key={id} 
-            onDeleted={() => onDeleted(id)}/>
+            onDelete={() => onDelete(id)}
+            onComplete={() => onComplete(id)}
+            onEdit={() => onEdit(id)}
+            />
         );
     });
 
