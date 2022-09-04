@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css'
-import { formatDistanceToNow } from 'date-fns'
 
 
 import NewTaskForm from '../NewTaskForm';
@@ -18,12 +17,23 @@ export default class App extends React.Component {
 
     taskId = 1
 
+    addNewTask = (name) => {
+        const newTask = this.createTask(name) 
+
+        this.setState(({ tasksData }) => {
+            return {
+                tasksData: [...tasksData, newTask]
+            };
+        });
+    };
+
     createTask = (taskName) => {
         return {
             description: taskName,
             completed: false,
             editing: false,
-            id: this.taskId++
+            id: this.taskId++,
+            createdTime: new Date()
         };
     };
 
@@ -36,44 +46,45 @@ export default class App extends React.Component {
         });
     };
 
-    onComplete = (id) => {
+    toggleProperty = (arr, id, propName) => {
+        const newArr = [...arr]
+        newArr.forEach ((item) => {
+            if (item.id === id) {
+                item[propName] = !item[propName]
+            }
+        });
+        return newArr
+    };
+
+    onToggleCompleted = (id) => {
+        this.setState(({ tasksData }) => {
+            return {
+                tasksData: this.toggleProperty(tasksData, id, 'completed')
+            }
+        });
+    };
+
+    onToggleEditing = (id) => {
+        this.setState(({ tasksData }) => {
+            return this.toggleProperty(tasksData, id, 'editing')
+        });
+    };
+
+
+    editTask = (id, newDescription) => {
         this.setState(({ tasksData }) => {
             const newArr = [...tasksData]
             newArr.forEach ((item) => {
                 if (item.id === id) {
-                    item.completed = !item.completed
+                    item.description = newDescription
+                    item.editing = false
                 }
             });
             return {
                 tasksData: newArr
-            };
-        });
-    };
-
-    editTask = (id) => {
-        this.setState(({ tasksData }) => {
-            const newArr = [...tasksData]
-            newArr.forEach ((item) => {
-                if (item.id === id) {
-                    item.editing = !item.editing
-                }
-            });
-            return {
-                tasksData: newArr
-            };
-        });
-    };
-
-
-    addNewTask = (name) => {
-        const newTask = this.createTask(name) 
-
-        this.setState(({ tasksData }) => {
-            return {
-                tasksData: [...tasksData, newTask]
-            };
-        });
-    };
+            }
+        })
+    }
 
     filterTasks = (filterName) => {
         this.setState({
@@ -114,9 +125,10 @@ export default class App extends React.Component {
                 <section className='main'>
                     <TaskList tasksData={filteredTaskData}
                               onDelete={this.deleteTask}
-                              onComplete={this.onComplete} 
-                              onEdit={this.editTask}
-                              filterType={filterType}/>
+                              onToggleCompleted={this.onToggleCompleted}
+                              onToggleEditing={this.onToggleEditing}
+                              editTask={this.editTask}
+                              filterType={filterType} />
                     <Footer tasksCounter={tasksCounter} 
                             onFilterChange={this.filterTasks} 
                             filterType={filterType} 

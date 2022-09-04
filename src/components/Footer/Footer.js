@@ -2,8 +2,18 @@ import React from "react";
 
 import TasksFilter from "../TasksFilter/TasksFilter";
 import './Footer.css';
+import PropTypes from 'prop-types'
 
 const Footer = ({ tasksCounter, onFilterChange, filterType, onClearCompleted }) => {
+
+    Footer.defaultProps = {
+        filterType: 'All'
+    }
+
+    Footer.propTypes = {
+        tasksCounter: PropTypes.number,
+        filterType: PropTypes.string
+    }
 
     return (
         <footer className="footer">

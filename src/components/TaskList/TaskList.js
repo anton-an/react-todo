@@ -1,18 +1,21 @@
 import React from "react";
 import './TaskList.css'
+import PropTypes from 'prop-types'
 
 import Task from "../Task";
 
-const TaskList = ({ tasksData, onDelete, onComplete, onEdit }) => {
+const TaskList = ({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted }) => {
 
     const elements = tasksData.map((item) => {
-        const { id } = item
+        const { id, createdTime } = item
         return (
             <Task {...item}
             key={id} 
             onDelete={() => onDelete(id)}
-            onComplete={() => onComplete(id)}
-            onEdit={() => onEdit(id)}
+            onToggleCompleted={() => onToggleCompleted(id)}
+            onToggleEditing={() => onToggleEditing(id)}
+            editTask={editTask}
+            createdTime={createdTime}
             />
         );
     });
@@ -23,5 +26,9 @@ const TaskList = ({ tasksData, onDelete, onComplete, onEdit }) => {
         </ul>
     );
 };
+
+TaskList.propTypes = {
+    tasksData: PropTypes.arrayOf(PropTypes.object)
+}
 
 export default TaskList;
