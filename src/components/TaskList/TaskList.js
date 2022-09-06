@@ -1,34 +1,31 @@
-import React from "react";
+import React from 'react'
 import './TaskList.css'
 import PropTypes from 'prop-types'
 
-import Task from "../Task";
+import Task from '../Task'
 
-const TaskList = ({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted }) => {
-
-    const elements = tasksData.map((item) => {
-        const { id, createdTime } = item
-        return (
-            <Task {...item}
-            key={id} 
-            onDelete={() => onDelete(id)}
-            onToggleCompleted={() => onToggleCompleted(id)}
-            onToggleEditing={() => onToggleEditing(id)}
-            editTask={editTask}
-            createdTime={createdTime}
-            />
-        );
-    });
-
+function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted }) {
+  const elements = tasksData.map((item) => {
+    const { id, description, completed, editing, createdTime } = item
     return (
-        <ul className="todo-list">
-            {elements}
-        </ul>
-    );
-};
-
-TaskList.propTypes = {
-    tasksData: PropTypes.arrayOf(PropTypes.object)
+      <Task
+        description={description}
+        completed={completed}
+        editing={editing}
+        createdTime={createdTime}
+        key={id}
+        onDelete={() => onDelete(id)}
+        onToggleCompleted={() => onToggleCompleted(id)}
+        onToggleEditing={() => onToggleEditing(id)}
+        editTask={editTask}
+      />
+    )
+  })
+  return <ul className="todo-list">{elements}</ul>
 }
 
-export default TaskList;
+TaskList.propTypes = {
+  tasksData: PropTypes.arrayOf(PropTypes.instanceOf(Object)).isRequired,
+}
+
+export default TaskList

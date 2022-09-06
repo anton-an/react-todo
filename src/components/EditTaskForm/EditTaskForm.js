@@ -1,36 +1,51 @@
-import React from "react";
+/* eslint-disable prettier/prettier */
+import React from 'react'
 import './EditTaskForm.css'
 import PropTypes from 'prop-types'
 
-
 export default class EditTaskForm extends React.Component {
-
-    static propTypes = {
-        description: PropTypes.string
+  constructor() {
+    super()
+    const { description } = this.props
+    this.state = {
+      value: description,
     }
+  }
 
-    state = {
-        value: this.props.description
+  onKeyDown = (e) => {
+    const { id, editTask } = this.props
+    const { value } = this.state
+    if (e.key === 'Enter') {
+      editTask(id, value)
     }
+  }
 
-    onKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            this.props.editTask(this.props.id, this.state.value)
-        }
-    };
+  onInputChange = (e) => {
+    this.setState({
+      value: e.target.value,
+    })
+  }
 
-    onInputChange = (e) => {
-        this.setState({
-            value: e.target.value
-        })
-    }
+  onInputBlur = () => {
+    const { onToggleEditing } = this.props
+    onToggleEditing()
+  }
 
-    onInputBlur = (e) => {
-        const {onToggleEditing} = this.props
-        onToggleEditing()
-    }
-    
-    render () {
-        return <input type="text" className="edit" onKeyDown={this.onKeyDown} onChange={this.onInputChange} onBlur={this.onInputBlur} value={this.state.value} autoFocus />
-    };
-};
+  render() {
+    const { value } = this.state
+    return (
+      <input
+        type="text"
+        className="edit"
+        onKeyDown={this.onKeyDown}
+        onChange={this.onInputChange}
+        onBlur={this.onInputBlur}
+        value={value}
+      />
+    )
+  }
+}
+
+EditTaskForm.propTypes = {
+  description: PropTypes.string.isRequired,
+}
