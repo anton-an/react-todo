@@ -1,6 +1,6 @@
 import React from 'react'
-import './TaskList.css'
 import PropTypes from 'prop-types'
+import './TaskList.css'
 
 import Task from '../Task'
 
@@ -13,6 +13,7 @@ function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleComp
         completed={completed}
         editing={editing}
         createdTime={createdTime}
+        id={id}
         key={id}
         onDelete={() => onDelete(id)}
         onToggleCompleted={() => onToggleCompleted(id)}
@@ -25,7 +26,19 @@ function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleComp
 }
 
 TaskList.propTypes = {
-  tasksData: PropTypes.arrayOf(PropTypes.instanceOf(Object)).isRequired,
+  tasksData: PropTypes.arrayOf(
+    PropTypes.shape({
+      description: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      completed: PropTypes.bool.isRequired,
+      editing: PropTypes.bool.isRequired,
+      createdTime: PropTypes.instanceOf(Date).isRequired,
+    })
+  ).isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onToggleCompleted: PropTypes.func.isRequired,
+  onToggleEditing: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 }
 
 export default TaskList

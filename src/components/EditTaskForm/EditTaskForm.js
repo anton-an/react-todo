@@ -1,51 +1,33 @@
-/* eslint-disable prettier/prettier */
 import React from 'react'
 import './EditTaskForm.css'
-import PropTypes from 'prop-types'
 
 export default class EditTaskForm extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     const { description } = this.props
     this.state = {
-      value: description,
+      taskName: description,
     }
   }
 
   onKeyDown = (e) => {
     const { id, editTask } = this.props
-    const { value } = this.state
+    const { taskName } = this.state
     if (e.key === 'Enter') {
-      editTask(id, value)
+      editTask(id, taskName)
     }
   }
 
   onInputChange = (e) => {
     this.setState({
-      value: e.target.value,
+      taskName: e.target.value,
     })
   }
 
-  onInputBlur = () => {
-    const { onToggleEditing } = this.props
-    onToggleEditing()
-  }
-
   render() {
-    const { value } = this.state
+    const { taskName } = this.state
     return (
-      <input
-        type="text"
-        className="edit"
-        onKeyDown={this.onKeyDown}
-        onChange={this.onInputChange}
-        onBlur={this.onInputBlur}
-        value={value}
-      />
+      <input type="text" className="edit" onKeyDown={this.onKeyDown} onChange={this.onInputChange} value={taskName} />
     )
   }
-}
-
-EditTaskForm.propTypes = {
-  description: PropTypes.string.isRequired,
 }

@@ -28,7 +28,7 @@
   "plugins": ["react", "prettier", "import"],
   "rules": {
     "object-curly-newline": 0,
-    "no-return-assign": 0,
+
     "no-param-reassign": 0,
     "react/no-unused-class-component-methods": 0,
     "indent": ["error", 2],

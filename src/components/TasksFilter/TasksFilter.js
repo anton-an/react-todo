@@ -11,13 +11,16 @@ function TasksFilter({ onFilterChange, filterType }) {
     onFilterChange(e.target.innerText)
   }
 
-  const buttons = filterButtons.map((item) => (
-    <li key={(key += 1)}>
-      <button type="button" className={item.label === filterType ? 'selected' : ''} onClick={onClick}>
-        {item.label}
-      </button>
-    </li>
-  ))
+  const buttons = filterButtons.map((item) => {
+    key += 1
+    return (
+      <li key={key}>
+        <button type="button" className={item.label === filterType ? 'selected' : ''} onClick={onClick}>
+          {item.label}
+        </button>
+      </li>
+    )
+  })
   return <ul className="filters">{buttons}</ul>
 }
 

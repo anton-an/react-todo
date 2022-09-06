@@ -1,11 +1,10 @@
 import React from 'react'
-import './Task.css'
-import PropTypes from 'prop-types'
 import { formatDistanceToNow } from 'date-fns'
+import './Task.css'
 
 import EditTaskForm from '../EditTaskForm'
 
-function Task({
+export default function Task({
   description,
   id,
   onDelete,
@@ -16,28 +15,36 @@ function Task({
   completed,
   editing,
 }) {
-  const taskClassName = () => {
-    if (completed) {
-      return 'completed'
+  const checkTaskClass = () => {
+    let classList = ''
+    if (completed === true) {
+      classList += 'completed'
+      return classList
     }
-    if (editing) {
-      return 'editing'
+    if (editing === true) {
+      classList += 'editing'
+      return classList
     }
-    return ''
+    classList = ''
+    return classList
   }
 
   const isChecked = () => completed
 
   return (
-    <li key={id} className={taskClassName()}>
+    <li key={id} className={checkTaskClass()}>
       <div className="view">
-        <input className="toggle" type="checkbox" onChange={onToggleCompleted} checked={isChecked()} />
-        <span className="description">{description}</span>
-        <span className="created">
-          created
-          {formatDistanceToNow(createdTime)}
-          ago
-        </span>
+        <input
+          className="toggle"
+          id="toggleCompleted"
+          type="checkbox"
+          onChange={onToggleCompleted}
+          checked={isChecked()}
+        />
+        <label htmlFor="toggleCompleted">
+          <span className="description">{description}</span>
+          <span className="created">created {formatDistanceToNow(createdTime)} ago</span>
+        </label>
         <button type="button" aria-label="Edit task" className="icon icon-edit" onClick={onToggleEditing} />
         <button type="button" aria-label="Delete task" className="icon icon-destroy" onClick={onDelete} />
       </div>
@@ -50,11 +57,3 @@ Task.defaultProps = {
   completed: false,
   editing: false,
 }
-
-Task.propTypes = {
-  description: PropTypes.string.isRequired,
-  completed: PropTypes.bool,
-  editing: PropTypes.bool,
-}
-
-export default Task

@@ -6,7 +6,7 @@ import Footer from '../Footer'
 import TaskList from '../TaskList'
 
 export default class App extends React.Component {
-  static toggleProperty = (arr, id, propName) => {
+  static toggleProperty(arr, id, propName) {
     const newArr = [...arr]
     newArr.forEach((item) => {
       if (item.id === id) {
@@ -25,7 +25,6 @@ export default class App extends React.Component {
 
   addNewTask = (name) => {
     const newTask = this.createTask(name)
-
     this.setState(({ tasksData }) => ({
       tasksData: [...tasksData, newTask],
     }))
@@ -42,12 +41,12 @@ export default class App extends React.Component {
 
   onToggleCompleted = (id) => {
     this.setState(({ tasksData }) => ({
-      tasksData: this.toggleProperty(tasksData, id, 'completed'),
+      tasksData: App.toggleProperty(tasksData, id, 'completed'),
     }))
   }
 
   onToggleEditing = (id) => {
-    this.setState(({ tasksData }) => this.toggleProperty(tasksData, id, 'editing'))
+    this.setState(({ tasksData }) => App.toggleProperty(tasksData, id, 'editing'))
   }
 
   editTask = (id, newDescription) => {
@@ -81,11 +80,12 @@ export default class App extends React.Component {
   }
 
   createTask(taskName) {
+    this.taskId += 1
     return {
       description: taskName,
       completed: false,
       editing: false,
-      id: (this.taskId += 1),
+      id: this.taskId,
       createdTime: new Date(),
     }
   }
@@ -94,7 +94,7 @@ export default class App extends React.Component {
     const { tasksData, filterType } = this.state
     const tasksCounter = tasksData.filter((item) => !item.completed).length
 
-    const filteredTaskData = tasksData.filter((item) => {
+    const filteredTasksData = tasksData.filter((item) => {
       if (filterType === 'Completed') {
         return item.completed
       }
@@ -112,12 +112,11 @@ export default class App extends React.Component {
         </header>
         <section className="main">
           <TaskList
-            tasksData={filteredTaskData}
+            tasksData={filteredTasksData}
             onDelete={this.deleteTask}
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
             editTask={this.editTask}
-            filterType={filterType}
           />
           <Footer
             tasksCounter={tasksCounter}
