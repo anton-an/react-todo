@@ -19,7 +19,7 @@ export default class App extends React.Component {
   taskId = 1
 
   state = {
-    tasksData: [],
+    tasksData: [this.createTask('Make Coffee'), this.createTask('Do something')],
     filterType: 'All',
   }
 

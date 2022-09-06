@@ -15,24 +15,21 @@ export default function Task({
   completed,
   editing,
 }) {
-  const checkTaskClass = () => {
+  const checkClassName = () => {
     let classList = ''
-    if (completed === true) {
-      classList += 'completed'
-      return classList
+    if (completed) {
+      classList += ' completed'
     }
-    if (editing === true) {
-      classList += 'editing'
-      return classList
+    if (editing) {
+      classList += ' editing'
     }
-    classList = ''
     return classList
   }
 
   const isChecked = () => completed
 
   return (
-    <li key={id} className={checkTaskClass()}>
+    <li key={id} className={checkClassName()}>
       <div className="view">
         <input
           className="toggle"
