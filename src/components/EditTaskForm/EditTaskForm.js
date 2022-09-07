@@ -24,10 +24,22 @@ export default class EditTaskForm extends React.Component {
     })
   }
 
+  onBlur = () => {
+    const { onToggleEditing, id } = this.props
+    onToggleEditing(id)
+  }
+
   render() {
     const { taskName } = this.state
     return (
-      <input type="text" className="edit" onKeyDown={this.onKeyDown} onChange={this.onInputChange} value={taskName} />
+      <input
+        type="text"
+        className="edit"
+        onKeyDown={this.onKeyDown}
+        onChange={this.onInputChange}
+        value={taskName}
+        onBlur={this.onBlur}
+      />
     )
   }
 }

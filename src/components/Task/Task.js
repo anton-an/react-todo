@@ -45,7 +45,13 @@ export default function Task({
         <button type="button" aria-label="Edit task" className="icon icon-edit" onClick={onToggleEditing} />
         <button type="button" aria-label="Delete task" className="icon icon-destroy" onClick={onDelete} />
       </div>
-      <EditTaskForm id={id} description={description} onToggleEditing={onToggleEditing} editTask={editTask} />
+      <EditTaskForm
+        id={id}
+        completed={completed}
+        description={description}
+        onToggleEditing={onToggleEditing}
+        editTask={editTask}
+      />
     </li>
   )
 }
