@@ -7,13 +7,20 @@ import TaskList from '../TaskList'
 
 export default class App extends React.Component {
   static toggleProperty(arr, id, propName) {
+    /* eslint-disable no-param-reassign */
     const newArr = [...arr]
     newArr.forEach((item) => {
+      if (propName === 'editing') {
+        if (item.id !== id) {
+          item[propName] = false
+        }
+      }
       if (item.id === id) {
         item[propName] = !item[propName]
       }
     })
     return newArr
+    /* eslint-enable no-param-reassign */
   }
 
   taskId = 1
@@ -54,8 +61,10 @@ export default class App extends React.Component {
       const newArr = [...tasksData]
       newArr.forEach((item) => {
         if (item.id === id) {
+          /* eslint-disable no-param-reassign */
           item.description = newDescription
           item.editing = false
+          /* eslint-enable no-param-reassign */
         }
       })
       return {
