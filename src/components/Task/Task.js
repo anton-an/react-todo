@@ -1,59 +1,63 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { formatDistanceToNow } from 'date-fns'
+
 import './Task.css'
+import formatTime from '../../formatTime'
 
-import EditTaskForm from '../EditTaskForm'
+export default class Task extends Component {
+  timerInterval = null
 
-export default function Task({
-  description,
-  id,
-  onDelete,
-  onToggleCompleted,
-  onToggleEditing,
-  editTask,
-  createdTime,
-  completed,
-  editing,
-}) {
-  const checkClassName = () => {
-    let classList = ''
-    if (completed) {
-      classList += ' completed'
+  componentDidUpdate(prevProps) {
+    const { completed } = this.props
+    if (prevProps.completed !== completed) {
+      this.stopTimer()
     }
-    if (editing) {
-      classList += ' editing'
-    }
-    return classList
   }
 
-  const isChecked = () => completed
+  componentWillUnmount() {
+    this.stopTimer()
+  }
 
-  return (
-    <li key={id} className={checkClassName()}>
+  startTimer = () => {
+    const { completed, id, timerChange, taskTime } = this.props
+    if (completed) return
+    if (!taskTime) return
+    if (this.timerInterval) return
+    this.timerInterval = setInterval(() => {
+      timerChange(id)
+    }, 1000)
+  }
+
+  stopTimer = () => {
+    clearInterval(this.timerInterval)
+    this.timerInterval = null
+  }
+
+  render() {
+    const { taskName, onDelete, completed, onToggleCompleted, onToggleEditing, createdTime, taskTime } = this.props
+    return (
       <div className="view">
         <input
           className="toggle"
           id="toggleCompleted"
           type="checkbox"
           onChange={onToggleCompleted}
-          checked={isChecked()}
+          checked={completed}
         />
         <label htmlFor="toggleCompleted">
-          <span className="description">{description}</span>
-          <span className="created">created {formatDistanceToNow(createdTime)} ago</span>
+          <span className="title">{taskName}</span>
+          <span className="description">
+            <button aria-label="Start timer" className="icon icon-play" type="button" onClick={this.startTimer} />
+            <button aria-label="Pause timer" className="icon icon-pause" type="button" onClick={this.stopTimer} />
+            {taskTime ? formatTime(taskTime) : 'time is up!'}
+          </span>
+          <span className="description">{`created ${formatDistanceToNow(createdTime)} ago`}</span>
         </label>
         <button type="button" aria-label="Edit task" className="icon icon-edit" onClick={onToggleEditing} />
         <button type="button" aria-label="Delete task" className="icon icon-destroy" onClick={onDelete} />
       </div>
-      <EditTaskForm
-        id={id}
-        completed={completed}
-        description={description}
-        onToggleEditing={onToggleEditing}
-        editTask={editTask}
-      />
-    </li>
-  )
+    )
+  }
 }
 
 Task.defaultProps = {

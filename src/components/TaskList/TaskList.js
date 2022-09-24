@@ -3,23 +3,44 @@ import PropTypes from 'prop-types'
 import './TaskList.css'
 
 import Task from '../Task'
+import EditTaskForm from '../EditTaskForm'
 
-function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted }) {
+function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted, timerChange }) {
   const elements = tasksData.map((item) => {
-    const { id, description, completed, editing, createdTime } = item
+    const { id, taskName, completed, editing, taskTime, createdTime } = item
+    const checkClassName = () => {
+      let classList = ''
+      if (completed) classList += ' completed'
+      if (editing) classList += ' editing'
+      return classList
+    }
     return (
-      <Task
-        description={description}
-        completed={completed}
-        editing={editing}
-        createdTime={createdTime}
-        id={id}
-        key={id}
-        onDelete={() => onDelete(id)}
-        onToggleCompleted={() => onToggleCompleted(id)}
-        onToggleEditing={() => onToggleEditing(id)}
-        editTask={editTask}
-      />
+      <li key={id} className={checkClassName()}>
+        {editing ? (
+          <EditTaskForm
+            id={id}
+            completed={completed}
+            taskName={taskName}
+            onToggleEditing={onToggleEditing}
+            editTask={editTask}
+          />
+        ) : (
+          <Task
+            taskName={taskName}
+            completed={completed}
+            editing={editing}
+            taskTime={taskTime}
+            createdTime={createdTime}
+            id={id}
+            key={id}
+            onDelete={() => onDelete(id)}
+            onToggleCompleted={() => onToggleCompleted(id)}
+            onToggleEditing={() => onToggleEditing(id)}
+            editTask={editTask}
+            timerChange={timerChange}
+          />
+        )}
+      </li>
     )
   })
   return <ul className="todo-list">{elements}</ul>
@@ -28,10 +49,11 @@ function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleComp
 TaskList.propTypes = {
   tasksData: PropTypes.arrayOf(
     PropTypes.shape({
-      description: PropTypes.string.isRequired,
+      taskName: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
       completed: PropTypes.bool.isRequired,
       editing: PropTypes.bool.isRequired,
+      taskTime: PropTypes.number.isRequired,
       createdTime: PropTypes.instanceOf(Date).isRequired,
     })
   ).isRequired,

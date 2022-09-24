@@ -4,9 +4,9 @@ import './EditTaskForm.css'
 export default class EditTaskForm extends React.Component {
   constructor(props) {
     super(props)
-    const { description } = this.props
+    const { taskName } = this.props
     this.state = {
-      taskName: description,
+      taskName,
     }
   }
 

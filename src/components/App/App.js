@@ -7,31 +7,21 @@ import TaskList from '../TaskList'
 
 export default class App extends React.Component {
   static toggleProperty(arr, id, propName) {
-    /* eslint-disable no-param-reassign */
-    const newArr = [...arr]
-    newArr.forEach((item) => {
-      if (propName === 'editing') {
-        if (item.id !== id) {
-          item[propName] = false
-        }
-      }
-      if (item.id === id) {
-        item[propName] = !item[propName]
-      }
-    })
-    return newArr
-    /* eslint-enable no-param-reassign */
+    const taskIndex = arr.findIndex((el) => el.id === id)
+    const oldTask = arr[taskIndex]
+    const newTask = { ...oldTask, [propName]: !oldTask[propName] }
+    return [...arr.slice(0, taskIndex), newTask, ...arr.slice(taskIndex + 1)]
   }
 
-  taskId = 1
+  taskId = 0
 
   state = {
-    tasksData: [this.createTask('Make Coffee'), this.createTask('Do something')],
+    tasksData: [this.createTask('Task', 3), this.createTask('Other Task', 150)],
     filterType: 'All',
   }
 
-  addNewTask = (name) => {
-    const newTask = this.createTask(name)
+  addNewTask = (name, seconds) => {
+    const newTask = this.createTask(name, seconds)
     this.setState(({ tasksData }) => ({
       tasksData: [...tasksData, newTask],
     }))
@@ -53,24 +43,18 @@ export default class App extends React.Component {
   }
 
   onToggleEditing = (id) => {
-    this.setState(({ tasksData }) => App.toggleProperty(tasksData, id, 'editing'))
+    this.setState(({ tasksData }) => ({ tasksData: App.toggleProperty(tasksData, id, 'editing') }))
   }
 
-  editTask = (id, newDescription) => {
-    this.setState(({ tasksData }) => {
-      const newArr = [...tasksData]
-      newArr.forEach((item) => {
-        if (item.id === id) {
-          /* eslint-disable no-param-reassign */
-          item.description = newDescription
-          item.editing = false
-          /* eslint-enable no-param-reassign */
-        }
-      })
-      return {
-        tasksData: newArr,
-      }
-    })
+  editTask = (id, description) => {
+    const { tasksData } = this.state
+    const taskIndex = tasksData.findIndex((el) => el.id === id)
+    const oldTask = tasksData[taskIndex]
+    const newTask = { ...oldTask, editing: !oldTask.editing, taskName: description }
+    const newTasksData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
+    this.setState(() => ({
+      tasksData: newTasksData,
+    }))
   }
 
   filterTasks = (filterName) => {
@@ -81,20 +65,32 @@ export default class App extends React.Component {
 
   clearCompleted = () => {
     this.setState(({ tasksData }) => {
-      const newArr = tasksData.filter((item) => !item.completed)
+      const newTasksData = tasksData.filter((item) => !item.completed)
       return {
-        tasksData: newArr,
+        tasksData: newTasksData,
       }
     })
   }
 
-  createTask(taskName) {
+  timerChange = (id) => {
+    this.setState((state) => {
+      const { tasksData } = state
+      const taskIndex = tasksData.findIndex((el) => el.id === id)
+      const oldTask = tasksData[taskIndex]
+      const newTask = { ...oldTask, taskTime: oldTask.taskTime - 1 }
+      const newTasksData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
+      return { tasksData: newTasksData }
+    })
+  }
+
+  createTask(taskName, seconds) {
     this.taskId += 1
     return {
-      description: taskName,
+      taskName,
       completed: false,
       editing: false,
       id: this.taskId,
+      taskTime: seconds,
       createdTime: new Date(),
     }
   }
@@ -126,6 +122,7 @@ export default class App extends React.Component {
             onToggleCompleted={this.onToggleCompleted}
             onToggleEditing={this.onToggleEditing}
             editTask={this.editTask}
+            timerChange={this.timerChange}
           />
           <Footer
             tasksCounter={tasksCounter}
