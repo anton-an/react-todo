@@ -21,7 +21,7 @@ export default class Task extends Component {
   startTimer = () => {
     const { completed, id, timerChange, taskTime } = this.props
     if (completed) return
-    if (!taskTime) return
+    if (!taskTime) this.stopTimer()
     if (this.timerInterval) return
     this.timerInterval = setInterval(() => {
       timerChange(id)
