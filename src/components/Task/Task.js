@@ -49,7 +49,7 @@ export default class Task extends Component {
           <span className="description">
             <button aria-label="Start timer" className="icon icon-play" type="button" onClick={this.startTimer} />
             <button aria-label="Pause timer" className="icon icon-pause" type="button" onClick={this.stopTimer} />
-            {taskTime ? formatTime(taskTime) : 'time is up!'}
+            {taskTime > 0 ? formatTime(taskTime) : 'time is up!'}
           </span>
           <span className="description">{`created ${formatDistanceToNow(createdTime)} ago`}</span>
         </label>
