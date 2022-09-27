@@ -54,7 +54,7 @@ export default class NewTaskForm extends React.Component {
         <input
           className="new-todo-form__timer"
           type="number"
-          min="0"
+          min="1"
           max="60"
           step="1"
           placeholder="Min"
@@ -65,7 +65,7 @@ export default class NewTaskForm extends React.Component {
         <input
           className="new-todo-form__timer"
           type="number"
-          min="0"
+          min="1"
           max="59"
           step="1"
           placeholder="Sec"

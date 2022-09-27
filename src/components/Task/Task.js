@@ -5,36 +5,60 @@ import './Task.css'
 import formatTime from '../../formatTime'
 
 export default class Task extends Component {
-  timerInterval = null
+  state = {
+    timer: 0,
+    isCounting: false,
+  }
 
-  componentDidUpdate(prevProps) {
+  timerInterval
+
+  componentDidMount() {
+    this.setState((state, props) => ({ timer: props.taskTime }))
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { isCounting, timer } = this.state
     const { completed } = this.props
+    if (prevState.timer !== timer) {
+      if (!timer) {
+        clearInterval(this.timerInterval)
+      }
+    }
     if (prevProps.completed !== completed) {
-      this.stopTimer()
+      if (completed === false) {
+        this.stopTimer()
+      }
+    }
+    if (prevState.isCounting !== isCounting || prevProps.completed !== completed) {
+      if (isCounting && !completed && timer > 0) {
+        this.timerInterval = setInterval(() => {
+          this.setState((state) => (state.timer > 0 ? { timer: state.timer - 1 } : { timer: 0 }))
+        }, 1000)
+      } else {
+        clearInterval(this.timerInterval)
+      }
     }
   }
 
   componentWillUnmount() {
-    this.stopTimer()
+    clearInterval(this.timerInterval)
   }
 
   startTimer = () => {
-    const { completed, id, timerChange, taskTime } = this.props
-    if (completed) return
-    if (!taskTime) this.stopTimer()
-    if (this.timerInterval) return
-    this.timerInterval = setInterval(() => {
-      timerChange(id)
-    }, 1000)
+    this.setState(() => ({
+      isCounting: true,
+    }))
   }
 
   stopTimer = () => {
-    clearInterval(this.timerInterval)
-    this.timerInterval = null
+    this.setState(() => ({
+      isCounting: false,
+    }))
   }
 
   render() {
-    const { taskName, onDelete, completed, onToggleCompleted, onToggleEditing, createdTime, taskTime } = this.props
+    const { taskName, onDelete, completed, onToggleCompleted, onToggleEditing, createdTime } = this.props
+    const { timer } = this.state
     return (
       <div className="view">
         <input
@@ -49,7 +73,7 @@ export default class Task extends Component {
           <span className="description">
             <button aria-label="Start timer" className="icon icon-play" type="button" onClick={this.startTimer} />
             <button aria-label="Pause timer" className="icon icon-pause" type="button" onClick={this.stopTimer} />
-            {taskTime > 0 ? formatTime(taskTime) : 'time is up!'}
+            {timer ? formatTime(timer) : 'time is up!'}
           </span>
           <span className="description">{`created ${formatDistanceToNow(createdTime)} ago`}</span>
         </label>

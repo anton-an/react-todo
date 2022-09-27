@@ -72,16 +72,16 @@ export default class App extends React.Component {
     })
   }
 
-  timerChange = (id) => {
-    this.setState((state) => {
-      const { tasksData } = state
-      const taskIndex = tasksData.findIndex((el) => el.id === id)
-      const oldTask = tasksData[taskIndex]
-      const newTask = { ...oldTask, taskTime: oldTask.taskTime - 1 }
-      const newTasksData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
-      return { tasksData: newTasksData }
-    })
-  }
+  // timerChange = (id) => {
+  //   this.setState((state) => {
+  //     const { tasksData } = state
+  //     const taskIndex = tasksData.findIndex((el) => el.id === id)
+  //     const oldTask = tasksData[taskIndex]
+  //     const newTask = { ...oldTask, taskTime: oldTask.taskTime - 1 }
+  //     const newTasksData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
+  //     return { tasksData: newTasksData }
+  //   })
+  // }
 
   createTask(taskName, seconds) {
     this.taskId += 1
