@@ -42,7 +42,7 @@ export default function App() {
   }
 
   const onToggleCompleted = (id) => {
-    toggleProperty(tasksData, id, 'completed')
+    setTasksData(toggleProperty(tasksData, id, 'completed'))
   }
 
   const onToggleEditing = (id) => {
