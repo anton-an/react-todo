@@ -1,11 +1,10 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import './TaskList.css'
 
 import Task from '../Task'
 import EditTaskForm from '../EditTaskForm'
 
-function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted, timerChange }) {
+export default function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleCompleted, timerChange }) {
   const elements = tasksData.map((item) => {
     const { id, taskName, completed, editing, taskTime, createdTime } = item
     const checkClassName = () => {
@@ -45,22 +44,3 @@ function TaskList({ tasksData, onDelete, editTask, onToggleEditing, onToggleComp
   })
   return <ul className="todo-list">{elements}</ul>
 }
-
-TaskList.propTypes = {
-  tasksData: PropTypes.arrayOf(
-    PropTypes.shape({
-      taskName: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-      completed: PropTypes.bool.isRequired,
-      editing: PropTypes.bool.isRequired,
-      taskTime: PropTypes.number.isRequired,
-      createdTime: PropTypes.instanceOf(Date).isRequired,
-    })
-  ).isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onToggleCompleted: PropTypes.func.isRequired,
-  onToggleEditing: PropTypes.func.isRequired,
-  editTask: PropTypes.func.isRequired,
-}
-
-export default TaskList

@@ -25,8 +25,9 @@
     "sourceType": "module",
     "requireConfigFile": false
   },
-  "plugins": ["react", "prettier", "import"],
+  "plugins": ["react", "prettier", "import", "jsx-a11y"],
   "rules": {
+    "jsx-a11y/no-autofocus": "off",
     "object-curly-newline": 0,
     "indent": ["error", 2],
     "prettier/prettier": "error",

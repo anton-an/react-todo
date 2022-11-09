@@ -4,8 +4,8 @@ import './TasksFilter.css'
 
 const filterButtons = [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }]
 
-function TasksFilter({ onFilterChange, filterType }) {
-  let key = 0
+export default function TasksFilter({ onFilterChange, filterType }) {
+  let key = 1
 
   const onClick = (e) => {
     onFilterChange(e.target.innerText)
@@ -23,5 +23,3 @@ function TasksFilter({ onFilterChange, filterType }) {
   })
   return <ul className="filters">{buttons}</ul>
 }
-
-export default TasksFilter
