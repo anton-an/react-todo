@@ -1,140 +1,118 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 
 import NewTaskForm from '../NewTaskForm'
 import Footer from '../Footer'
 import TaskList from '../TaskList'
+import TasksFilter from '../TasksFilter/TasksFilter'
 
-export default class App extends React.Component {
-  static toggleProperty(arr, id, propName) {
-    /* eslint-disable no-param-reassign */
-    const newArr = [...arr]
-    newArr.forEach((item) => {
-      if (propName === 'editing') {
-        if (item.id !== id) {
-          item[propName] = false
-        }
-      }
-      if (item.id === id) {
-        item[propName] = !item[propName]
-      }
-    })
-    return newArr
-    /* eslint-enable no-param-reassign */
-  }
+export default function App() {
+  let taskId = 0
 
-  taskId = 1
-
-  state = {
-    tasksData: [this.createTask('Make Coffee'), this.createTask('Do something')],
-    filterType: 'All',
-  }
-
-  addNewTask = (name) => {
-    const newTask = this.createTask(name)
-    this.setState(({ tasksData }) => ({
-      tasksData: [...tasksData, newTask],
-    }))
-  }
-
-  deleteTask = (id) => {
-    this.setState(({ tasksData }) => {
-      const newArr = tasksData.filter((item) => item.id !== id)
-      return {
-        tasksData: newArr,
-      }
-    })
-  }
-
-  onToggleCompleted = (id) => {
-    this.setState(({ tasksData }) => ({
-      tasksData: App.toggleProperty(tasksData, id, 'completed'),
-    }))
-  }
-
-  onToggleEditing = (id) => {
-    this.setState(({ tasksData }) => App.toggleProperty(tasksData, id, 'editing'))
-  }
-
-  editTask = (id, newDescription) => {
-    this.setState(({ tasksData }) => {
-      const newArr = [...tasksData]
-      newArr.forEach((item) => {
-        if (item.id === id) {
-          /* eslint-disable no-param-reassign */
-          item.description = newDescription
-          item.editing = false
-          /* eslint-enable no-param-reassign */
-        }
-      })
-      return {
-        tasksData: newArr,
-      }
-    })
-  }
-
-  filterTasks = (filterName) => {
-    this.setState({
-      filterType: filterName,
-    })
-  }
-
-  clearCompleted = () => {
-    this.setState(({ tasksData }) => {
-      const newArr = tasksData.filter((item) => !item.completed)
-      return {
-        tasksData: newArr,
-      }
-    })
-  }
-
-  createTask(taskName) {
-    this.taskId += 1
+  const createTask = (taskName, seconds) => {
+    taskId += 1
     return {
-      description: taskName,
+      taskName,
       completed: false,
       editing: false,
-      id: this.taskId,
+      id: taskId,
+      taskTime: seconds,
       createdTime: new Date(),
     }
   }
 
-  render() {
-    const { tasksData, filterType } = this.state
-    const tasksCounter = tasksData.filter((item) => !item.completed).length
+  const [tasksData, setTasksData] = useState([createTask('Task', 3), createTask('Other Task', 150)])
+  const [filterType, setFilterType] = useState('All')
 
-    const filteredTasksData = tasksData.filter((item) => {
-      if (filterType === 'Completed') {
-        return item.completed
-      }
-      if (filterType === 'Active') {
-        return !item.completed
-      }
-      return item
-    })
-
-    return (
-      <section className="todoapp">
-        <header className="header">
-          <h1>Todos</h1>
-          <NewTaskForm onTaskAdded={this.addNewTask} />
-        </header>
-        <section className="main">
-          <TaskList
-            tasksData={filteredTasksData}
-            onDelete={this.deleteTask}
-            onToggleCompleted={this.onToggleCompleted}
-            onToggleEditing={this.onToggleEditing}
-            editTask={this.editTask}
-          />
-          <Footer
-            tasksCounter={tasksCounter}
-            onFilterChange={this.filterTasks}
-            filterType={filterType}
-            onClearCompleted={this.clearCompleted}
-          />
-        </section>
-      </section>
-    )
+  const addNewTask = (name, seconds) => {
+    const newTask = createTask(name, seconds)
+    setTasksData([...tasksData, newTask])
   }
+
+  const toggleProperty = (arr, id, propName) => {
+    const taskIndex = arr.findIndex((el) => el.id === id)
+    const oldTask = arr[taskIndex]
+    const newTask = { ...oldTask, [propName]: !oldTask[propName] }
+    return [...arr.slice(0, taskIndex), newTask, ...arr.slice(taskIndex + 1)]
+  }
+
+  const deleteTask = (id) => {
+    const newArr = tasksData.filter((item) => item.id !== id)
+    setTasksData(newArr)
+  }
+
+  const onToggleCompleted = (id) => {
+    toggleProperty(tasksData, id, 'completed')
+  }
+
+  const onToggleEditing = (id) => {
+    const taskIndex = tasksData.findIndex((el) => el.id === id)
+    const oldTask = tasksData[taskIndex]
+    const newTask = { ...oldTask, editing: !oldTask.editing }
+    const newData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
+    /* eslint-disable no-param-reassign */
+    newData.forEach((item, index) => {
+      if (index !== taskIndex) {
+        item.editing = false
+      }
+    })
+    /* eslint-enable no-param-reassign */
+    setTasksData(newData)
+  }
+
+  const editTask = (id, description) => {
+    const taskIndex = tasksData.findIndex((el) => el.id === id)
+    const oldTask = tasksData[taskIndex]
+    const newTask = { ...oldTask, editing: !oldTask.editing, taskName: description }
+    const newTasksData = [...tasksData.slice(0, taskIndex), newTask, ...tasksData.slice(taskIndex + 1)]
+    setTasksData(newTasksData)
+  }
+
+  const onFilterTasks = (filterName) => {
+    setFilterType(filterName)
+  }
+
+  const onClearCompleted = () => {
+    const newTasksData = tasksData.filter((item) => !item.completed)
+    setTasksData(newTasksData)
+  }
+
+  const tasksCounter = tasksData.filter((item) => !item.completed).length
+
+  const filteredTasksData = tasksData.filter((item) => {
+    if (filterType === 'Completed') {
+      return item.completed
+    }
+    if (filterType === 'Active') {
+      return !item.completed
+    }
+    return item
+  })
+
+  return (
+    <section className="todoapp">
+      <header className="header">
+        <h1 className="app-title">Todos</h1>
+        <NewTaskForm onTaskAdded={addNewTask} />
+      </header>
+      <section className="main">
+        <TaskList
+          tasksData={filteredTasksData}
+          onDelete={deleteTask}
+          onToggleCompleted={onToggleCompleted}
+          onToggleEditing={onToggleEditing}
+          editTask={editTask}
+        />
+        <Footer>
+          <footer className="footer">
+            <span className="todo-count">{tasksCounter} items left</span>
+            <TasksFilter onFilterChange={onFilterTasks} filterType={filterType} />
+            <button type="button" className="clear-completed" onClick={onClearCompleted}>
+              Clear completed
+            </button>
+          </footer>
+        </Footer>
+      </section>
+    </section>
+  )
 }
