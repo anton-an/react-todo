@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 
 import NewTaskForm from '../NewTaskForm'
@@ -7,10 +7,12 @@ import TaskList from '../TaskList'
 import TasksFilter from '../TasksFilter/TasksFilter'
 
 export default function App() {
-  let taskId = 0
+  const [taskId, setTaskId] = useState(0)
+  const [tasksData, setTasksData] = useState([])
+  const [filterType, setFilterType] = useState('All')
 
   const createTask = (taskName, seconds) => {
-    taskId += 1
+    setTaskId((state) => state + 1)
     return {
       taskName,
       completed: false,
@@ -21,8 +23,9 @@ export default function App() {
     }
   }
 
-  const [tasksData, setTasksData] = useState([createTask('Task', 3), createTask('Other Task', 150)])
-  const [filterType, setFilterType] = useState('All')
+  useEffect(() => {
+    setTasksData([createTask('Task', 300), createTask('Another task', 10)])
+  }, [])
 
   const addNewTask = (name, seconds) => {
     const newTask = createTask(name, seconds)
