@@ -6,6 +6,7 @@ export default function NewTaskForm({ onTaskAdded }) {
   const [label, setLabel] = useState('')
   const [minutes, setMinutes] = useState('')
   const [seconds, setSeconds] = useState('')
+  const [error, setError] = useState(null)
 
   const onChangeText = (e) => {
     setLabel(e.target.value)
@@ -14,6 +15,8 @@ export default function NewTaskForm({ onTaskAdded }) {
   const onChangeMinutes = (e) => {
     if (e.target.value > 60) {
       setMinutes(60)
+      setError('Minutes should be less than 60')
+      setTimeout(() => setError(null), 2000)
     } else if (e.target.value < 0) {
       setMinutes(0)
     } else {
@@ -24,6 +27,8 @@ export default function NewTaskForm({ onTaskAdded }) {
   const onChangeSeconds = (e) => {
     if (e.target.value > 59) {
       setSeconds(59)
+      setError('Seconds should be less than 59')
+      setTimeout(() => setError(null), 2000)
     } else if (e.target.value < 0) {
       setSeconds(0)
     } else {
@@ -39,6 +44,8 @@ export default function NewTaskForm({ onTaskAdded }) {
     setMinutes('')
     setSeconds('')
   }
+
+  const errorText = <span className="error-text">{error}</span>
 
   return (
     <form className="new-todo-form" onSubmit={onSubmit}>
@@ -56,6 +63,12 @@ export default function NewTaskForm({ onTaskAdded }) {
         min="0"
         max="60"
         step="1"
+        onKeyDown={(e) => {
+          if (e.key === '.') e.preventDefault()
+          if (e.key === ',') e.preventDefault()
+          if (e.key === '-') e.preventDefault()
+          if (e.key === 'e') e.preventDefault()
+        }}
         placeholder="Min"
         onChange={onChangeMinutes}
         value={minutes}
@@ -66,12 +79,19 @@ export default function NewTaskForm({ onTaskAdded }) {
         type="number"
         max="59"
         step="1"
+        onKeyDown={(e) => {
+          if (e.key === '.') e.preventDefault()
+          if (e.key === ',') e.preventDefault()
+          if (e.key === '-') e.preventDefault()
+          if (e.key === 'e') e.preventDefault()
+        }}
         placeholder="Sec"
         onChange={onChangeSeconds}
         value={seconds}
         required
       />
       <input type="submit" style={{ display: 'none' }} />
+      {error ? errorText : null}
     </form>
   )
 }
