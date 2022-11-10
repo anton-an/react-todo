@@ -64,7 +64,6 @@ export default function NewTaskForm({ onTaskAdded }) {
       <input
         className="new-todo-form__timer"
         type="number"
-        min="1"
         max="59"
         step="1"
         placeholder="Sec"
