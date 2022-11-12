@@ -15,12 +15,14 @@ export default function Task({
 }) {
   const [timer, setTimer] = useState(0)
   const [isCounting, setIsCounting] = useState(false)
+  const [referenceTime, setReferenceTime] = useState(0)
 
   useEffect(() => {
     setTimer(taskTime)
   }, [taskTime])
 
   const startTimer = () => {
+    setReferenceTime(Math.trunc(Date.now() / 1000))
     setIsCounting(true)
   }
 
@@ -29,22 +31,23 @@ export default function Task({
   }
 
   useEffect(() => {
-    let interval
+    let countdown
     if (isCounting) {
-      interval = setInterval(() => {
-        if (taskTime > 0) {
-          setTimer(timer - 1)
-        }
-        if (timer === 0) {
-          stopTimer()
-        }
+      countdown = setTimeout(() => {
+        setTimer((prevTime) => {
+          if (prevTime <= 0) return 0
+          const now = Math.trunc(Date.now() / 1000)
+          const interval = now - referenceTime
+          setReferenceTime(now)
+          return prevTime - interval
+        })
       }, 1000)
     }
     if (completed) {
       stopTimer()
     }
-    return () => clearInterval(interval)
-  }, [isCounting, taskTime, timer, completed])
+    return () => clearTimeout(countdown)
+  }, [timer, isCounting, completed, referenceTime])
 
   return (
     <div className="view">

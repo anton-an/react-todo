@@ -7,12 +7,12 @@ import TaskList from '../TaskList'
 import TasksFilter from '../TasksFilter/TasksFilter'
 
 export default function App() {
-  const [taskId, setTaskId] = useState(0)
+  const [taskId, setTaskId] = useState(1)
   const [tasksData, setTasksData] = useState([])
   const [filterType, setFilterType] = useState('All')
 
   const createTask = (taskName, seconds) => {
-    setTaskId((state) => state + 1)
+    setTaskId(taskId + 1)
     return {
       taskName,
       completed: false,
@@ -24,7 +24,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    setTasksData([createTask('Task', 300), createTask('Another task', 10)])
+    setTasksData([createTask('Task', 10)])
   }, [])
 
   const addNewTask = (name, seconds) => {
