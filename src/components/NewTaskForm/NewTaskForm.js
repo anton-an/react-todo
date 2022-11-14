@@ -15,7 +15,7 @@ export default function NewTaskForm({ onTaskAdded }) {
   const onChangeMinutes = (e) => {
     if (e.target.value > 60) {
       setMinutes(60)
-      setError('Minutes should be less than 60')
+      setError('Minutes should not be more than 60')
       setTimeout(() => setError(null), 2000)
     } else if (e.target.value < 0) {
       setMinutes(0)
@@ -27,7 +27,7 @@ export default function NewTaskForm({ onTaskAdded }) {
   const onChangeSeconds = (e) => {
     if (e.target.value > 59) {
       setSeconds(59)
-      setError('Seconds should be less than 59')
+      setError('Seconds should not be more than 59')
       setTimeout(() => setError(null), 2000)
     } else if (e.target.value < 0) {
       setSeconds(0)
@@ -43,6 +43,13 @@ export default function NewTaskForm({ onTaskAdded }) {
     setLabel('')
     setMinutes('')
     setSeconds('')
+  }
+
+  const onKeyDown = (e) => {
+    if (e.key === '.') e.preventDefault()
+    if (e.key === ',') e.preventDefault()
+    if (e.key === '-') e.preventDefault()
+    if (e.key === 'e') e.preventDefault()
   }
 
   const errorText = <span className="error-text">{error}</span>
@@ -63,12 +70,7 @@ export default function NewTaskForm({ onTaskAdded }) {
         min="0"
         max="60"
         step="1"
-        onKeyDown={(e) => {
-          if (e.key === '.') e.preventDefault()
-          if (e.key === ',') e.preventDefault()
-          if (e.key === '-') e.preventDefault()
-          if (e.key === 'e') e.preventDefault()
-        }}
+        onKeyDown={onKeyDown}
         placeholder="Min"
         onChange={onChangeMinutes}
         value={minutes}
@@ -79,12 +81,7 @@ export default function NewTaskForm({ onTaskAdded }) {
         type="number"
         max="59"
         step="1"
-        onKeyDown={(e) => {
-          if (e.key === '.') e.preventDefault()
-          if (e.key === ',') e.preventDefault()
-          if (e.key === '-') e.preventDefault()
-          if (e.key === 'e') e.preventDefault()
-        }}
+        onKeyDown={onKeyDown}
         placeholder="Sec"
         onChange={onChangeSeconds}
         value={seconds}
