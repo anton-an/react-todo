@@ -107,13 +107,11 @@ export default function App() {
           editTask={editTask}
         />
         <Footer>
-          <footer className="footer">
-            <span className="todo-count">{tasksCounter} items left</span>
-            <TasksFilter onFilterChange={onFilterTasks} filterType={filterType} />
-            <button type="button" className="clear-completed" onClick={onClearCompleted}>
-              Clear completed
-            </button>
-          </footer>
+          <span className="todo-count">{tasksCounter} items left</span>
+          <TasksFilter onFilterChange={onFilterTasks} filterType={filterType} />
+          <button type="button" className="clear-completed" onClick={onClearCompleted}>
+            Clear completed
+          </button>
         </Footer>
       </section>
     </section>
